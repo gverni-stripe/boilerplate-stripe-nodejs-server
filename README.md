@@ -57,5 +57,3 @@ Lastly, you will see the ngrok URL to serve our app via HTTPS. For example:
     https://<example>.ngrok.io
 
 Use this URL in your browser to start the demo.
-
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
