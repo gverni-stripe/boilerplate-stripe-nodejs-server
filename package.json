@@ -17,7 +17,7 @@
     "setup-products": "node server/node/setup.js",
     "setup-cli": "stripe login --project-name=stripe-payments-demo",
     "webhook": "stripe listen --project-name=stripe-payments-demo --forward-to http://localhost:8000/webhook",
-    "start": "node server/node/server.js"
+    "start": "node server/server.js"
   },
   "dependencies": {
     "body-parser": "^1.17.1",
