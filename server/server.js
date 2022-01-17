@@ -15,6 +15,14 @@ const path = require('path');
 const ngrok = config.ngrok.enabled ? require('ngrok') : null;
 const app = express();
 
+if (!config.stripe.publishableKey || !config.stripe.secretKey) {
+  console.error(
+    'Set STRIPE_PUBLISHABLE_KEY and STRIPE_SECRET_KEY in a .env file'
+  );
+  // Very harsh way of stopping nodemon... should find something better
+  process.exit(2);
+}
+
 // Setup useful middleware.
 app.use(
   bodyParser.json({
