@@ -42,7 +42,7 @@ const server = app.listen(config.port, () => {
 
 // Turn on the ngrok tunnel in development, which provides both the mandatory HTTPS
 // support for all card payments, and the ability to consume webhooks locally.
-if (ngrok) {
+if (process.argv[2] === 'tunnel' && ngrok) {
   ngrok
     .connect({
       addr: config.ngrok.port,
