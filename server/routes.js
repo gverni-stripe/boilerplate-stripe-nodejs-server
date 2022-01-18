@@ -34,19 +34,19 @@ router.get('/', (req, res) => {
  */
 
 // Calculate total payment amount based on items in basket.
-const calculatePaymentAmount = async items => {
-  const productList = await products.list();
-  // Look up sku for the item so we can get the current price.
-  const skus = productList.data.reduce(
-    (a, product) => [...a, ...product.skus.data],
-    []
-  );
-  const total = items.reduce((a, item) => {
-    const sku = skus.filter(sku => sku.id === item.parent)[0];
-    return a + sku.price * item.quantity;
-  }, 0);
-  return total;
-};
+// const calculatePaymentAmount = async items => {
+//   const productList = await products.list();
+//   // Look up sku for the item so we can get the current price.
+//   const skus = productList.data.reduce(
+//     (a, product) => [...a, ...product.skus.data],
+//     []
+//   );
+//   const total = items.reduce((a, item) => {
+//     const sku = skus.filter(sku => sku.id === item.parent)[0];
+//     return a + sku.price * item.quantity;
+//   }, 0);
+//   return total;
+// };
 
 // Create the PaymentIntent on the backend.
 router.post('/payment_intents', async (req, res, next) => {
@@ -74,34 +74,34 @@ router.post('/payment_intents', async (req, res, next) => {
 });
 
 // Update PaymentIntent with shipping cost.
-router.post('/payment_intents/:id/shipping_change', async (req, res, next) => {
-  const {items, shippingOption} = req.body;
-  let amount = await calculatePaymentAmount(items);
-  amount += products.getShippingCost(shippingOption.id);
+// router.post('/payment_intents/:id/shipping_change', async (req, res, next) => {
+//   const {items, shippingOption} = req.body;
+//   let amount = await calculatePaymentAmount(items);
+//   amount += products.getShippingCost(shippingOption.id);
 
-  try {
-    const paymentIntent = await stripe.paymentIntents.update(req.params.id, {
-      amount,
-    });
-    return res.status(200).json({paymentIntent});
-  } catch (err) {
-    return res.status(500).json({error: err.message});
-  }
-});
+//   try {
+//     const paymentIntent = await stripe.paymentIntents.update(req.params.id, {
+//       amount,
+//     });
+//     return res.status(200).json({paymentIntent});
+//   } catch (err) {
+//     return res.status(500).json({error: err.message});
+//   }
+// });
 
 // Update PaymentIntent with currency and paymentMethod.
-router.post('/payment_intents/:id/update_currency', async (req, res, next) => {
-  const {currency, payment_methods} = req.body; 
-  try {
-    const paymentIntent = await stripe.paymentIntents.update(req.params.id, {
-      currency,
-      payment_method_types: payment_methods,
-    });
-    return res.status(200).json({paymentIntent});
-  } catch (err) {
-    return res.status(500).json({error: err.message});
-  }
-}); 
+// router.post('/payment_intents/:id/update_currency', async (req, res, next) => {
+//   const {currency, payment_methods} = req.body; 
+//   try {
+//     const paymentIntent = await stripe.paymentIntents.update(req.params.id, {
+//       currency,
+//       payment_method_types: payment_methods,
+//     });
+//     return res.status(200).json({paymentIntent});
+//   } catch (err) {
+//     return res.status(500).json({error: err.message});
+//   }
+// }); 
 
 // Webhook handler to process payments for sources asynchronously.
 router.post('/webhook', async (req, res) => {
@@ -206,25 +206,25 @@ router.get('/config', (req, res) => {
 });
 
 // Retrieve all products.
-router.get('/products', async (req, res) => {
-  res.json(await products.list());
-});
+// router.get('/products', async (req, res) => {
+//   res.json(await products.list());
+// });
 
 // Retrieve a product by ID.
-router.get('/products/:id', async (req, res) => {
-  res.json(await products.retrieve(req.params.id));
-});
+// router.get('/products/:id', async (req, res) => {
+//   res.json(await products.retrieve(req.params.id));
+// });
 
 // Retrieve the PaymentIntent status.
-router.get('/payment_intents/:id/status', async (req, res) => {
-  const paymentIntent = await stripe.paymentIntents.retrieve(req.params.id);
-  const payload = {status: paymentIntent.status};
+// router.get('/payment_intents/:id/status', async (req, res) => {
+//   const paymentIntent = await stripe.paymentIntents.retrieve(req.params.id);
+//   const payload = {status: paymentIntent.status};
 
-  if (paymentIntent.last_payment_error) {
-    payload.last_payment_error = paymentIntent.last_payment_error.message;
-  }
+//   if (paymentIntent.last_payment_error) {
+//     payload.last_payment_error = paymentIntent.last_payment_error.message;
+//   }
 
-  res.json({paymentIntent: payload});
-});
+//   res.json({paymentIntent: payload});
+// });
 
 module.exports = router;
