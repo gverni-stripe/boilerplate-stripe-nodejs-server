@@ -17,8 +17,8 @@
     "setup-cli": "stripe login --project-name=stripe-payments-demo",
     "webhook": "stripe listen --project-name=stripe-payments-demo --forward-to http://localhost:8000/webhook",
     "start": "node server/server.js",
-    "dev": "nodemon server/server.js",
-    "dev:tunnel": "nodemon server/server.js tunnel"
+    "dev": "DEBUG=stripe nodemon server/server.js",
+    "dev:tunnel": "DEBUG=stripe nodemon server/server.js tunnel"
   },
   "dependencies": {
     "body-parser": "^1.17.1",

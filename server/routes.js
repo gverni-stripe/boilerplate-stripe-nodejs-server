@@ -16,6 +16,7 @@ const express = require('express');
 const router = express.Router();
 const stripe = require('stripe')(config.stripe.secretKey);
 stripe.setApiVersion(config.stripe.apiVersion);
+ const stripeLog = require('debug')('stripe')
 
 // Render the main app HTML.
 router.get('/', (req, res) => {
@@ -49,13 +50,17 @@ const calculatePaymentAmount = async items => {
 
 // Create the PaymentIntent on the backend.
 router.post('/payment_intents', async (req, res, next) => {
-  let {currency, items} = req.body;
-  const amount = await calculatePaymentAmount(items);
+   let {currency, amount} = req.body;
+   currency = currency || 'gbp';
+   amount = amount | 1099;
+ 
+   stripeLog(`paymentIntents creation request: ${amount} ${currency}`)
 
   try {
     //build initial payment methods which should exclude currency specific ones
-    const initPaymentMethods = config.paymentMethods.filter(paymentMethod => paymentMethod !== 'au_becs_debit');
-    
+     const initPaymentMethods = config.paymentMethods.filter(
+       (paymentMethod) => paymentMethod !== 'au_becs_debit'
+     );
 
     const paymentIntent = await stripe.paymentIntents.create({
       amount,
